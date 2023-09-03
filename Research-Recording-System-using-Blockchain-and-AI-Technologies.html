@@ -1,0 +1,819 @@
+<!doctype html>
+
+<body>
+    <h1>Research Recording System</h1>
+    <h2>Research Record Registration</h2>
+    <form id="form">
+        <input type="number" id="noteid" placeholder="Input Record ID" />
+        <input type="number" id="ndate" placeholder="Input date (ex. 20230123)" />
+        <input type="text" id="titlewho" placeholder="Title_Username" />
+        <textarea id="pass" cols="40" placeholder="Password (if none, not entered)"></textarea>
+        <textarea id="note" cols="100" rows="10" placeholder="Input Record Content (speech input possible)"></textarea>
+        <button id="start-btn">Start speech input</button>
+        <button id="stop-btn">Stop speech input</button>
+        <textarea id="usechem" cols="100"
+            placeholder="Input Used Chemicals (ex. chemical_ID chemical_name amount_used, separate multiple chemicals with [,])"></textarea>
+        <input type="submit" value="Register Record" />
+    </form>
+
+    <h3>
+        Record ID, Record Date, Title_Username, Password, Record Content, Used Chemicals
+    </h3>
+    <p id="latest">
+    </p>
+    <hr>
+    <h2>the Number of Record Check</h2>
+    <form id="form2">
+        <input type="submit" value="Check" />
+    </form>
+    <h4>the Number of Record</h4>
+    <p id="notescount">
+    </p>
+    <hr>
+    <h2>Research Recording Search</h2>
+    <form id="form3">
+        <input type="number" id="notenumber" placeholder="Input Record ID" />
+        <input type="submit" value="Search" />
+    </form>
+    <h4>
+        Record ID, Record Date, Title_Username, Used Chemicals
+    </h4>
+    <p id="noteinfo">
+    </p>
+
+    <hr>
+    <h2>Record Content Check</h2>
+    <form id="form4">
+        <input type="number" id="notesnum" placeholder="Input Record ID" />
+        <input type="text" id="notepass" placeholder="Input Password" />
+        <input type="submit" value="Check" />
+    </form>
+    <h4>
+        Record ID, Record Date, Title_Username, Record Content, Used Chemicals
+    </h4>
+    <p id="mynotes">
+    </p>
+
+    <hr>
+
+    <h2>Chemical Registration</h2>
+    <form id="form5">
+        <input type="number" id="chemid" placeholder="Input Chemical ID" />
+        <input type="number" id="cdate" placeholder="Date of Introduction(ex. 20230123)" />
+        <input type="text" id="chemname" placeholder="Chemical Name" />
+        <input type="number" id="used" placeholder="Last Used Amount" />
+        <input type="number" id="zanryo" placeholder="Remaining Amount" />
+        <input type="number" id="lastdate" placeholder="Last Used Date(ex. 20230123)" />
+        <input type="text" id="place" placeholder="Storage Location" />
+        <input type="text" id="who" placeholder="Last Use Username" />
+        <input type="submit" value="Chemical Registration" />
+    </form>
+
+
+    <h3>
+        Chemical ID, Date of Introduction, Chemical Name, Last Used Amount, Remaining Amount, Last Used Date,
+        Storage Location, Last Use Username
+    </h3>
+    <p id="latest2">
+    </p>
+
+    <hr>
+
+    <h2>Chemical Calculation(Use when chemicals are used and the remaining amount is reduced)</h2>
+    <form id="form6">
+        <input type="number" id="chemid2" placeholder="Input Chemical ID" />
+        <input type="text" id="chemname2" placeholder="Chemical Name" />
+        <input type="number" id="used2" placeholder="Used Amount" />
+        <input type="number" id="zanryo2" placeholder="Remaining Amount" />
+        <input type="number" id="lastdate2" placeholder="Last Used Date(ex. 20230123)" />
+        <input type="text" id="place2" placeholder="Storage Location" />
+        <input type="text" id="who2" placeholder="Last Use Username" />
+        <input type="submit" value="Calculate" />
+    </form>
+
+    <h3>
+        Chemical ID, Chemical Name, Used Amount, Remaining Amount, Last Used Date, Storage Location, Last Use Username
+    </h3>
+    <p id="latest3">
+    </p>
+
+    <hr>
+    <h2>Chemical Update(Use when updating registered chemicals)</h2>
+    <form id="form7">
+        <input type="number" id="chemid3" placeholder="Input Chemical ID" />
+        <input type="number" id="renewdate" placeholder="Updated Date(ex. 20230123)" />
+        <input type="text" id="chemname3" placeholder="Chemical Name" />
+        <input type="number" id="zanryo3" placeholder="Remaining Amount" />
+        <input type="number" id="newzanryo" placeholder="Update Amount" />
+        <input type="text" id="place3" placeholder="Storage Location" />
+        <input type="text" id="who3" placeholder="Last (Use, Update) Username" />
+        <input type="submit" value="Update" />
+    </form>
+
+    <h3>
+        Chemical ID, Updated Date, Chemical Name, Remaining Amount, Update Amount, Storage Location,
+        Last (Use, Update) Username
+    </h3>
+    <p id="latest4">
+    </p>
+
+    <hr>
+    <h2>Check the Number of Registered Chemical</h2>
+    <form id="form8">
+        <input type="submit" value="Check" />
+    </form>
+    <h4>the Number of Registered Chemical</h4>
+    <p id="chemscount">
+    </p>
+    <hr>
+    <h2>Check Registered Chemical Information</h2>
+    <h2>Check </h2>
+    <form id="form9">
+        <input type="number" id="chemnumber" placeholder="Input Chemical ID" />
+        <input type="submit" value="Check" />
+    </form>
+    <h4>
+        Chemical ID, Chemical Registration Date, Chemical Name, Remaining Amount, Last Used Date, Storage Location
+    </h4>
+    <p id="cheminfo">
+    </p>
+    <hr>
+    <h2>Check the Last Use History of Registered Chemicals</h2>
+    <form id="form10">
+        <input type="number" id="chemsnum" placeholder="Input Chemical ID" />
+        <input type="submit" value="Check" />
+    </form>
+    <h4>
+        Chemical ID, Chemical Name, Last Used Amount, Remaining Amount, Last Used Date, Storage Location,
+        Last (Use, Update) Username
+    </h4>
+    <p id="mychems">
+    </p>
+    <hr>
+    <h2>Input list</h2>
+    <ul id="list">
+    </ul>
+    <script>
+        const address = "0x86F94bd3D7059390Bca0B9607fd6D9df9f9b6cd0";
+        const abi = [
+            {
+                "constant": false,
+                "inputs": [
+                    {
+                        "name": "_ChemID",
+                        "type": "uint32"
+                    },
+                    {
+                        "name": "_date",
+                        "type": "uint32"
+                    },
+                    {
+                        "name": "_ChemName",
+                        "type": "string"
+                    },
+                    {
+                        "name": "_used",
+                        "type": "uint32"
+                    },
+                    {
+                        "name": "_zanryo",
+                        "type": "uint32"
+                    },
+                    {
+                        "name": "_lastdate",
+                        "type": "uint32"
+                    },
+                    {
+                        "name": "_place",
+                        "type": "string"
+                    },
+                    {
+                        "name": "_who",
+                        "type": "string"
+                    }
+                ],
+                "name": "ChemRegister",
+                "outputs": [],
+                "payable": false,
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "constant": true,
+                "inputs": [],
+                "name": "getChemicalsCount",
+                "outputs": [
+                    {
+                        "name": "",
+                        "type": "uint32"
+                    }
+                ],
+                "payable": false,
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "constant": false,
+                "inputs": [
+                    {
+                        "name": "_NoID",
+                        "type": "uint32"
+                    },
+                    {
+                        "name": "_date",
+                        "type": "uint32"
+                    },
+                    {
+                        "name": "_Title_who",
+                        "type": "string"
+                    },
+                    {
+                        "name": "_pass",
+                        "type": "string"
+                    },
+                    {
+                        "name": "_MokutekiAndMethodAndKekka",
+                        "type": "string"
+                    },
+                    {
+                        "name": "_UseChem",
+                        "type": "string"
+                    }
+                ],
+                "name": "NoteRegister",
+                "outputs": [],
+                "payable": false,
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "constant": false,
+                "inputs": [
+                    {
+                        "name": "_ChemID",
+                        "type": "uint32"
+                    },
+                    {
+                        "name": "_ChemName",
+                        "type": "string"
+                    },
+                    {
+                        "name": "_used",
+                        "type": "uint32"
+                    },
+                    {
+                        "name": "_zanryo",
+                        "type": "uint32"
+                    },
+                    {
+                        "name": "_lastdate",
+                        "type": "uint32"
+                    },
+                    {
+                        "name": "_place",
+                        "type": "string"
+                    },
+                    {
+                        "name": "_who",
+                        "type": "string"
+                    }
+                ],
+                "name": "calc",
+                "outputs": [],
+                "payable": false,
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "constant": true,
+                "inputs": [
+                    {
+                        "name": "_ChemID",
+                        "type": "uint32"
+                    }
+                ],
+                "name": "getMyChemicalInfo",
+                "outputs": [
+                    {
+                        "name": "",
+                        "type": "uint32"
+                    },
+                    {
+                        "name": "",
+                        "type": "uint32"
+                    },
+                    {
+                        "name": "",
+                        "type": "string"
+                    },
+                    {
+                        "name": "",
+                        "type": "uint32"
+                    },
+                    {
+                        "name": "",
+                        "type": "uint32"
+                    },
+                    {
+                        "name": "",
+                        "type": "string"
+                    }
+                ],
+                "payable": false,
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "constant": true,
+                "inputs": [
+                    {
+                        "name": "_ChemID",
+                        "type": "uint32"
+                    }
+                ],
+                "name": "getMyChemicalUsed",
+                "outputs": [
+                    {
+                        "name": "",
+                        "type": "uint32"
+                    },
+                    {
+                        "name": "",
+                        "type": "string"
+                    },
+                    {
+                        "name": "",
+                        "type": "uint32"
+                    },
+                    {
+                        "name": "",
+                        "type": "uint32"
+                    },
+                    {
+                        "name": "",
+                        "type": "uint32"
+                    },
+                    {
+                        "name": "",
+                        "type": "string"
+                    },
+                    {
+                        "name": "",
+                        "type": "string"
+                    }
+                ],
+                "payable": false,
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "constant": false,
+                "inputs": [
+                    {
+                        "name": "_ChemID",
+                        "type": "uint32"
+                    },
+                    {
+                        "name": "_renewdate",
+                        "type": "uint32"
+                    },
+                    {
+                        "name": "_ChemName",
+                        "type": "string"
+                    },
+                    {
+                        "name": "_zanryo",
+                        "type": "uint32"
+                    },
+                    {
+                        "name": "_newzanryo",
+                        "type": "uint32"
+                    },
+                    {
+                        "name": "_place",
+                        "type": "string"
+                    },
+                    {
+                        "name": "_who",
+                        "type": "string"
+                    }
+                ],
+                "name": "renew",
+                "outputs": [],
+                "payable": false,
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "constant": true,
+                "inputs": [],
+                "name": "getNotesCount",
+                "outputs": [
+                    {
+                        "name": "",
+                        "type": "uint32"
+                    }
+                ],
+                "payable": false,
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "constant": true,
+                "inputs": [],
+                "name": "owner",
+                "outputs": [
+                    {
+                        "name": "",
+                        "type": "address"
+                    }
+                ],
+                "payable": false,
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "constant": true,
+                "inputs": [
+                    {
+                        "name": "_NoID",
+                        "type": "uint32"
+                    },
+                    {
+                        "name": "_pass",
+                        "type": "string"
+                    }
+                ],
+                "name": "getMyNotes",
+                "outputs": [
+                    {
+                        "name": "",
+                        "type": "uint32"
+                    },
+                    {
+                        "name": "",
+                        "type": "uint32"
+                    },
+                    {
+                        "name": "",
+                        "type": "string"
+                    },
+                    {
+                        "name": "",
+                        "type": "string"
+                    },
+                    {
+                        "name": "",
+                        "type": "string"
+                    }
+                ],
+                "payable": false,
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "constant": true,
+                "inputs": [
+                    {
+                        "name": "_NoID",
+                        "type": "uint32"
+                    }
+                ],
+                "name": "getMyNotesInfo",
+                "outputs": [
+                    {
+                        "name": "",
+                        "type": "uint32"
+                    },
+                    {
+                        "name": "",
+                        "type": "uint32"
+                    },
+                    {
+                        "name": "",
+                        "type": "string"
+                    },
+                    {
+                        "name": "",
+                        "type": "string"
+                    }
+                ],
+                "payable": false,
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "payable": false,
+                "stateMutability": "nonpayable",
+                "type": "constructor"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": false,
+                        "name": "id",
+                        "type": "uint32"
+                    },
+                    {
+                        "indexed": false,
+                        "name": "Title",
+                        "type": "string"
+                    },
+                    {
+                        "indexed": false,
+                        "name": "who",
+                        "type": "string"
+                    }
+                ],
+                "name": "noteregistered",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": false,
+                        "name": "id",
+                        "type": "uint32"
+                    },
+                    {
+                        "indexed": false,
+                        "name": "ChemName",
+                        "type": "string"
+                    },
+                    {
+                        "indexed": false,
+                        "name": "zanryo",
+                        "type": "uint32"
+                    }
+                ],
+                "name": "chemregistered",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": false,
+                        "name": "id",
+                        "type": "uint32"
+                    },
+                    {
+                        "indexed": false,
+                        "name": "ChemName",
+                        "type": "string"
+                    },
+                    {
+                        "indexed": false,
+                        "name": "zanryo",
+                        "type": "uint32"
+                    }
+                ],
+                "name": "calculated",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": false,
+                        "name": "id",
+                        "type": "uint32"
+                    },
+                    {
+                        "indexed": false,
+                        "name": "ChemName",
+                        "type": "string"
+                    },
+                    {
+                        "indexed": false,
+                        "name": "zanryo",
+                        "type": "uint32"
+                    }
+                ],
+                "name": "renewed",
+                "type": "event"
+            }
+        ];
+
+        let account;
+        let contract;
+        window.addEventListener("load", () => {
+            window.ethereum.enable();
+            window.web3.eth.getAccounts((error, result) => {
+                account = result[0];
+                contract = window.web3.eth.contract(abi).at(address);
+                contract.notes[0].call({ from: account }, (error, result) => {
+                    const latest = document.getElementById("latest");
+                    latest.innerText = result;
+                });
+            });
+        });
+
+        const startBtn = document.querySelector('#start-btn');
+        const stopBtn = document.querySelector('#stop-btn');
+        const resultRec = document.querySelector('#note');
+        SpeechRecognition = webkitSpeechRecognition || SpeechRecognition;
+        let recognition = new SpeechRecognition();
+        recognition.lang = 'ja-JP';
+        recognition.interimResults = true;
+        recognition.continuous = true;
+        let finalTranscript = '';
+        recognition.onresult = (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            let interimTranscript = '';
+            for (let i = event.resultIndex; i < event.results.length; i++) {
+                let transcript = event.results[i][0].transcript;
+                if (event.results[i].isFinal) {
+                    finalTranscript += transcript;
+                } else {
+                    interimTranscript = transcript;
+                }
+            }
+            resultRec.innerHTML = finalTranscript + interimTranscript;
+        }
+        startBtn.onclick = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            recognition.start();
+        }
+        stopBtn.onclick = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            recognition.stop();
+        }
+
+        const form = document.getElementById("form");
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const noteid = document.getElementById("noteid");
+            const ndate = document.getElementById("ndate");
+            const titlewho = document.getElementById("titlewho");
+            const pass = document.getElementById("pass");
+            const note = document.getElementById("note");
+            const usechem = document.getElementById("usechem");
+            const latest = document.getElementById("latest");
+            latest.innerText = "Record ID:" + noteid.value + "\n" + "Record Date:" + ndate.value + "\n" + "Title_Username:" + titlewho.value + "\n" + "Password:" + pass.value + "\n" + "Record Content:" + note.value + "\n" + "Used Chemicals:" + usechem.value;
+            const list = document.getElementById("list");
+            list.innerHTML = list.innerHTML + "<li>" + "【Register Record】" + "Record ID:" + noteid.value + "\n" + "Record Date:" + ndate.value + "\n" + "Title_Username:" + titlewho.value + "\n" + "Password:" + pass.value + "\n" + "Record Content:" + note.value + "\n" + "Used Chemicals:" + usechem.value + "</li>"
+            contract.NoteRegister.sendTransaction(
+                noteid.value, ndate.value, titlewho.value, pass.value, note.value, usechem.value,
+                {
+                    from: account,
+                    gas: 3000000,
+                    gasPrice: 2100000000,
+                },
+                () => { }
+            );
+        });
+
+        const form2 = document.getElementById("form2");
+        form2.addEventListener("submit", (e) => {
+            e.preventDefault();
+            contract.getNotesCount.call({ from: account }, (error, result) => {
+                const notescount = document.getElementById("notescount");
+                notescount.innerText = result;
+            });
+        });
+
+        const form3 = document.getElementById("form3");
+        form3.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const notenumber = document.getElementById("notenumber");
+            contract.getMyNotesInfo.call(
+                notenumber.value,
+                { from: account }, (error, result) => {
+                    const noteinfo = document.getElementById("noteinfo");
+                    noteinfo.innerText = "Record ID:" + result[0] + "\n" + "Record Date:" + result[1] + "\n" + "Title_Username:" + result[2] + "\n" + "Used Chemicals:" + result[3];
+                });
+        });
+
+        const form4 = document.getElementById("form4");
+        form4.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const notesnum = document.getElementById("notesnum");
+            const notepass = document.getElementById("notepass");
+            contract.getMyNotes.call(
+                notesnum.value, notepass.value,
+                { from: account }, (error, result) => {
+                    const mynotes = document.getElementById("mynotes");
+                    mynotes.innerText = "Record ID:" + result[0] + "\n" + "Record Date:" + result[1] + "\n" + "Title_Username:" + result[2] + "\n" + "Record Content:" + result[3] + "\n" + "Used Chemicals:" + result[4];
+                });
+        });
+
+        const form5 = document.getElementById("form5");
+        form5.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const chemid = document.getElementById("chemid");
+            const cdate = document.getElementById("cdate");
+            const chemname = document.getElementById("chemname");
+            const used = document.getElementById("used");
+            const zanryo = document.getElementById("zanryo");
+            const lastdate = document.getElementById("lastdate");
+            const place = document.getElementById("place");
+            const who = document.getElementById("who");
+            const latest2 = document.getElementById("latest2");
+            latest2.innerText = "Chemical ID:" + chemid.value + "\n" + "Date of Introduction:" + cdate.value + "\n" + "Chemical Name:" + chemname.value + "\n" + "Last Used Amount:" + used.value + "\n" + "Remaining Amount:" + zanryo.value + "\n" + "Last Used Date:" + lastdate.value + "\n" + "Storage Location:" + place.value + "\n" + "Last Use Username:" + who.value;
+            const list = document.getElementById("list");
+            list.innerHTML = list.innerHTML + "<li>" + "【Chemical Registration】" + "Chemical ID:" + chemid.value + "\n" + "Date of Introduction:" + cdate.value + "\n" + "Chemical Name:" + chemname.value + "\n" + "Last Used Amount:" + used.value + "\n" + "Remaining Amount:" + zanryo.value + "\n" + "Last Used Date:" + lastdate.value + "\n" + "Storage Location:" + place.value + "\n" + "Last Use Username:" + who.value + "</li>"
+            contract.ChemRegister.sendTransaction(
+                chemid.value, cdate.value, chemname.value, used.value, zanryo.value, lastdate.value, place.value, who.value,
+                {
+                    from: account,
+                    gas: 3000000,
+                    gasPrice: 2100000000,
+                },
+                () => { }
+            );
+        });
+
+
+        const form6 = document.getElementById("form6");
+        form6.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const chemid2 = document.getElementById("chemid2");
+            const chemname2 = document.getElementById("chemname2");
+            const used2 = document.getElementById("used2");
+            const zanryo2 = document.getElementById("zanryo2");
+            const lastdate2 = document.getElementById("lastdate2");
+            const place2 = document.getElementById("place2");
+            const who2 = document.getElementById("who2");
+            const latest3 = document.getElementById("latest3");
+            latest3.innerText = "Chemical ID:" + chemid2.value + "\n" + "Chemical Name:" + chemname2.value + "\n" + "Used Amount:" + used2.value + "\n" + "Remaining Amount:" + zanryo2.value + "\n" + "Last Used Date:" + lastdate2.value + "\n" + "Storage Location:" + place2.value + "\n" + "Last Use Username:" + who2.value;
+            const list = document.getElementById("list");
+            list.innerHTML = list.innerHTML + "<li>" + "【Chemical Calculation】" + "Chemical ID:" + chemid2.value + "\n" + "Chemical Name:" + chemname2.value + "\n" + "Used Amount:" + used2.value + "\n" + "Remaining Amount:" + zanryo2.value + "\n" + "Last Used Date:" + lastdate2.value + "\n" + "Storage Location:" + place2.value + "\n" + "Last Use Username:" + who2.value + "</li>"
+            contract.calc.sendTransaction(
+                chemid2.value, chemname2.value, used2.value, zanryo2.value, lastdate2.value, place2.value, who2.value,
+                {
+                    from: account,
+                    gas: 3000000,
+                    gasPrice: 2100000000,
+                },
+                () => { }
+            );
+        });
+
+        const form7 = document.getElementById("form7");
+        form7.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const chemid3 = document.getElementById("chemid3");
+            const renewdate = document.getElementById("renewdate");
+            const chemname3 = document.getElementById("chemname3");
+            const zanryo3 = document.getElementById("zanryo3");
+            const newzanryo = document.getElementById("newzanryo");
+            const place3 = document.getElementById("place3");
+            const who3 = document.getElementById("who3");
+            const latest4 = document.getElementById("latest4");
+            latest4.innerText = "Chemical ID:" + chemid3.value + "\n" + "Updated Date:" + renewdate.value + "\n" + "Chemical Name:" + chemname3.value + "\n" + "Remaining Amount:" + zanryo3.value + "\n" + "Update Amount:" + newzanryo.value + "\n" + "Storage Location:" + place3.value + "\n" + "Last Use Username:" + who3.value;
+            const list = document.getElementById("list");
+            list.innerHTML = list.innerHTML + "<li>" + "【Chemical Update】" + "Chemical ID:" + chemid3.value + "\n" + "Updated Date:" + renewdate.value + "\n" + "Chemical Name:" + chemname3.value + "\n" + "Remaining Amount:" + zanryo3.value + "\n" + "Update Amount:" + newzanryo.value + "\n" + "Storage Location:" + place3.value + "\n" + "Last Use Username:" + who3.value + "</li>"
+            contract.renew.sendTransaction(
+                chemid3.value, renewdate.value, chemname3.value, zanryo3.value, newzanryo.value, place3.value, who3.value,
+                {
+                    from: account,
+                    gas: 3000000,
+                    gasPrice: 2100000000,
+                },
+                () => { }
+            );
+        });
+
+        const form8 = document.getElementById("form8");
+        form8.addEventListener("submit", (e) => {
+            e.preventDefault();
+            contract.getChemicalsCount.call({ from: account }, (error, result) => {
+                const chemscount = document.getElementById("chemscount");
+                chemscount.innerText = result;
+            });
+        });
+
+        const form9 = document.getElementById("form9");
+        form9.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const chemnumber = document.getElementById("chemnumber");
+            contract.getMyChemicalInfo.call(
+                chemnumber.value,
+                { from: account }, (error, result) => {
+                    const cheminfo = document.getElementById("cheminfo");
+                    cheminfo.innerText = "Chemical ID:" + result[0] + "\n" + "Date of Introduction:" + result[1] + "\n" + "Chemical Name:" + result[2] + "\n" + "Remaining Amount:" + result[3] + "\n" + "Last Used Date:" + result[4] + "\n" + "Storage Location:" + result[5];
+                });
+        });
+
+        const form10 = document.getElementById("form10");
+        form10.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const chemsnum = document.getElementById("chemsnum");
+            contract.getMyChemicalUsed.call(
+                chemsnum.value,
+                { from: account }, (error, result) => {
+                    const mychems = document.getElementById("mychems");
+                    mychems.innerText = "Chemical ID:" + result[0] + "\n" + "Chemical Name:" + result[1] + "\n" + "Last Used Amount:" + result[2] + "\n" + "Remaining Amount:" + result[3] + "\n" + "Last Used Date:" + result[4] + "\n" + "Storage Location:" + result[5] + "\n" + "Last (Use, Update) Username:" + result[6];
+                });
+        });
+    </script>
+</body>
+
+</html>
